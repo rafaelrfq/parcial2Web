@@ -1,5 +1,7 @@
 package edu.pucmm.eict.controladora;
 
+import org.h2.tools.Server;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -7,6 +9,7 @@ import java.sql.SQLException;
 public class DataBaseServices {
     private static DataBaseServices instancia;
     private String URL = "jdbc:h2:tcp://localhost/~/Parcial2"; //Modo Server...
+    private Server tcp;
 
 
     private DataBaseServices() {
@@ -20,30 +23,41 @@ public class DataBaseServices {
         return instancia;
     }
 
-    /**
-     * Metodo para el registro de driver de conexión.
-     */
-
-
-    public Connection getConexion() {
-        Connection con = null;
+    private void registerDriver() {
         try {
-            con = DriverManager.getConnection(URL, "sa", "");
-        } catch (SQLException ex) {
-            System.out.println("aa" + ex);
-            //Logger.getLogger(EstudianteServices.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return con;
-    }
-
-    public void testConexion() {
-        try {
-            getConexion().close();
-            System.out.println("Conexión realizado con exito...");
-        } catch (SQLException ex) {
-            System.out.println("bb" + ex);
-            //Logger.getLogger(EstudianteServices.class.getName()).log(Level.SEVERE, null, ex);
+            Class.forName("org.h2.Driver");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
     }
 
+    public Connection getConn() {
+        Connection conexion = null;
+        try {
+            conexion = DriverManager.getConnection(URL, "sa", "");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return conexion;
+    }
+
+    public void testConn() {
+        try {
+            getConn().close();
+            System.out.println("Conexión exitosa!");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void startDB() throws SQLException {
+        // Se crea el servidor
+        tcp = Server.createTcpServer("-tcpPort", "9092", "-tcpAllowOthers", "-tcpDaemon", "-ifNotExists").start();
+    }
+
+    public void stopDB() {
+        // Se detiene el servidor
+        //Server.shutdownTcpServer("tcp://localhost:9092", "", false, false);
+        tcp.stop();
+    }
 }
