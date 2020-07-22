@@ -1,17 +1,22 @@
 package edu.pucmm.eict.logico;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 public class Usuario {
     @Id
     private String usuario;
-    @Column(name = "Nombre")
+    @Column()
     private String nombre;
-    @Column(name = "Password")
+    @Column()
     private String password;
+    @OneToMany(fetch = FetchType.LAZY, cascade=CascadeType.ALL , orphanRemoval = true)
+    private List<Formulario> formularios = new ArrayList<Formulario>();
+
 
     public Usuario(){
 
