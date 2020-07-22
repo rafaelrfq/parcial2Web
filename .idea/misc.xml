@@ -4,6 +4,7 @@
   <component name="FrameworkDetectionExcludesConfiguration">
     <file type="web" url="file://$PROJECT_DIR$/../orm-jpa-with-postgre" />
     <file type="web" url="file://$PROJECT_DIR$" />
+    <file type="web" url="file://$PROJECT_DIR$/../practica#2-Carrito de" />
   </component>
   <component name="JavaScriptSettings">
     <option name="languageLevel" value="ES6" />
