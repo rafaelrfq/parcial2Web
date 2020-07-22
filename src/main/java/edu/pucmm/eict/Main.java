@@ -15,7 +15,7 @@ public class Main {
 
         // Se prueba la conexion con la DB
         DataBaseServices.getInstancia().testConn();
-
+    //hi
         // Se agregan usuarios de prueba
         Usuario tmp = new Usuario("admin", "Administradora", "admin");
         UsuarioServicios.getInstance().crear(tmp);
