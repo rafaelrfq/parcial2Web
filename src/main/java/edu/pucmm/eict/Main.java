@@ -1,12 +1,15 @@
 package edu.pucmm.eict;
 
 import edu.pucmm.eict.controladora.DataBaseServices;
+import edu.pucmm.eict.controladora.FormularioServicios;
 import edu.pucmm.eict.controladora.UsuarioServicios;
+import edu.pucmm.eict.logico.Formulario;
 import edu.pucmm.eict.logico.Usuario;
 import io.javalin.Javalin;
 import io.javalin.core.util.RouteOverviewPlugin;
 
 import java.sql.SQLException;
+import java.util.*;
 
 public class Main {
     public static void main(String[] args) throws SQLException {
@@ -24,6 +27,36 @@ public class Main {
             javalinConfig.addStaticFiles("/public"); //Agregamos carpeta public como source de archivos estaticos
             javalinConfig.registerPlugin(new RouteOverviewPlugin("rutas")); //Aplicamos el plugin de rutas
         }).start(7000);
+
+        app.get("/", ctx -> {
+            Map<String, Object> contexto = new HashMap<>();
+            contexto.put("title", "Homepage");
+            ctx.render("/public/templates/home.ftl", contexto);
+        });
+
+        app.get("/formulario", ctx -> {
+            List<String> choices = Arrays.asList("", "Basico", "Medio", "Grado Universitario", "Postgrado", "Doctorado");
+            Map<String, Object> contexto = new HashMap<>();
+            contexto.put("title", "Formulario");
+            contexto.put("choices", choices);
+            ctx.render("/public/templates/formulario.ftl", contexto);
+        });
+
+        app.post("formulario", ctx -> {
+            String nomb = ctx.formParam("nombre").toString();
+            String sector = ctx.formParam("sector").toString();
+            String nivelEscolar = ctx.formParam("nivelEscolar").toString();
+            System.out.println(nomb + " " + sector + " " + nivelEscolar);
+            ctx.redirect("/formulario");
+        });
+
+        app.get("/formulario/listado", ctx -> {
+            List<Formulario> forms = FormularioServicios.getInstance().ListadoCompleto();
+            Map<String, Object> contexto = new HashMap<>();
+            contexto.put("title", "Listado Formularios");
+            contexto.put("formularios", forms);
+            ctx.render("/public/templates/listado_formulario.ftl", contexto);
+        });
 
         DataBaseServices.getInstancia().stopDB();
     }
