@@ -21,6 +21,7 @@ dependencies {
     compile 'com.h2database:h2:1.4.200'
     compile 'org.hibernate:hibernate-core:5.4.17.Final'
     compile 'org.hibernate:hibernate-entitymanager:5.4.17.Final'
+    compile 'com.j2html:j2html:1.0.0'
 }
 
 shadowJar{
