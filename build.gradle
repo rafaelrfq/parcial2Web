@@ -22,6 +22,7 @@ dependencies {
     compile 'org.hibernate:hibernate-core:5.4.17.Final'
     compile 'org.hibernate:hibernate-entitymanager:5.4.17.Final'
     compile 'com.j2html:j2html:1.0.0'
+    compile "com.fasterxml.jackson.core:jackson-databind:2.10.1"
 }
 
 shadowJar{

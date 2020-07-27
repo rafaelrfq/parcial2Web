@@ -22,6 +22,8 @@ public class Main {
         // Se agregan usuarios de prueba
         Usuario tmp = new Usuario("admin", "Administradora", "admin");
         UsuarioServicios.getInstance().crear(tmp);
+        Formulario formulario = new Formulario("John Carlos", "Espaillar", "Grado", 19.439718, -70.543466);
+        FormularioServicios.getInstance().crear(formulario);
 
         Javalin app = Javalin.create(javalinConfig -> {
             javalinConfig.addStaticFiles("/public"); //Agregamos carpeta public como source de archivos estaticos
@@ -58,6 +60,15 @@ public class Main {
             ctx.render("/public/templates/listado_formulario.ftl", contexto);
         });
 
-        DataBaseServices.getInstancia().stopDB();
+        app.get("/formulario/mapa", ctx -> {
+            List<Formulario> forms = FormularioServicios.getInstance().ListadoCompleto();
+            Map<String, Object> contexto = new HashMap<>();
+            contexto.put("title", "Listado Formularios Registrado Por el Usuario");
+            contexto.put("formularios", forms);
+            ctx.render("/public/templates/mapa.ftl", contexto);
+        });
+
+
+        // DataBaseServices.getInstancia().stopDB();
     }
 }

@@ -14,12 +14,12 @@ public class Formulario implements Serializable {
     private String nombre;
     private String sector;
     private String nivelEscolar;
-    private String latitud;
-    private String longitud;
+    private double latitud;
+    private double longitud;
 
     public Formulario() { }
 
-    public Formulario(String nombre, String sector, String nivelEscolar, String latitud, String longitud) {
+    public Formulario(String nombre, String sector, String nivelEscolar, double latitud, double longitud) {
         this.nombre = nombre;
         this.sector = sector;
         this.nivelEscolar = nivelEscolar;
@@ -39,11 +39,11 @@ public class Formulario implements Serializable {
 
     public void setNivelEscolar(String nivelEscolar) { this.nivelEscolar = nivelEscolar; }
 
-    public String getLatitud() { return latitud; }
+    public double getLatitud() { return latitud; }
 
-    public void setLatitud(String latitud) { this.latitud = latitud; }
+    public void setLatitud(double latitud) { this.latitud = latitud; }
 
-    public String getLongitud() { return longitud; }
+    public double getLongitud() { return longitud; }
 
-    public void setLongitud(String longitud) { this.longitud = longitud; }
+    public void setLongitud(double longitud) { this.longitud = longitud; }
 }
