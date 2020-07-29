@@ -68,10 +68,6 @@ public class Main {
             ctx.render("/public/templates/mapa.ftl", contexto);
         });
 
-        app.get("/html5", ctx -> {
-            ctx.render("/public/templates/html5.ftl");
-        });
-
         // DataBaseServices.getInstancia().stopDB();
     }
 }
