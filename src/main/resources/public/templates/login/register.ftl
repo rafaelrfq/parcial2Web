@@ -11,9 +11,7 @@
         <label for="inputPassword"  class="sr-only">Password</label>
         <input type="password" id="inputPassword" name="password" class="form-control" placeholder="Password" required>
         <button class="btn btn-lg btn-primary btn-block" type="submit" form="formula">Registrar</button>
-        <form class="form-signin" action="/login" method="post" id="formula">
-            <button class="btn btn-lg btn-danger btn-block " type="submit" form="formula">Volver Atras</button
-        </form>
+        <a class="btn btn-lg btn-danger btn-block " type="submit" href="/login">Volver Atras</a>
         <label>
             <input class="checkbox mb-3" type="checkbox" value="remember-me" name="statu"> Recordarme
         </label>
