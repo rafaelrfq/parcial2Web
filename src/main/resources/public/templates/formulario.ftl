@@ -61,7 +61,9 @@
             var request = formularios.put({
                 nombre: document.querySelector("#nombre").value,
                 sector: document.querySelector("#sector").value,
-                nivelEscolar: document.querySelector("#nivelEscolar").value
+                nivelEscolar: document.querySelector("#nivelEscolar").value,
+                latitud: document.querySelector("#latitud").value,
+                longitud: document.querySelector("#longitud").value
             });
 
             request.onerror = function (e) {
@@ -75,6 +77,8 @@
                 document.querySelector("#nombre").value = "";
                 document.querySelector("#sector").value = "";
                 document.querySelector("#nivelEscolar").value = "";
+                document.querySelector("#latitud").value = "";
+                document.querySelector("#longitud").value = "";
             };
 
 
@@ -126,6 +130,8 @@
             filaTabla.insertCell().textContent = "Nombre";
             filaTabla.insertCell().textContent = "Sector";
             filaTabla.insertCell().textContent = "Nivel Escolar";
+            filaTabla.insertCell().textContent = "Latitud";
+            filaTabla.insertCell().textContent = "Longitud";
 
             for (var key in lista_formularios) {
                 //
@@ -133,6 +139,8 @@
                 filaTabla.insertCell().textContent = ""+lista_formularios[key].nombre;
                 filaTabla.insertCell().textContent = ""+lista_formularios[key].sector;
                 filaTabla.insertCell().textContent = ""+lista_formularios[key].nivelEscolar;
+                filaTabla.insertCell().textContent = ""+lista_formularios[key].latitud;
+                filaTabla.insertCell().textContent = ""+lista_formularios[key].longitud;
             }
 
             document.getElementById("listaFormularios").innerHTML="";
@@ -173,11 +181,59 @@
                 </#list>
             </select>
         </div>
+        <div class="form-group">
+            <label for="latitud">Latitud:</label>
+            <input class="form-control" type="text" id="latitud" name="latitud" readonly>
+        </div>
+        <div class="form-group">
+            <label for="longitud">Longitud:</label>
+            <input class="form-control" type="text" id="longitud" name="longitud" readonly>
+        </div>
         <button class="btn btn-primary" onclick="agregarFormulario()">Salvar</button>
         <button class="btn btn-secondary" onclick="listarDatos()">Listar Datos</button>
     </div>
     <br><br>
     <div id="listaFormularios"></div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script>
+        var id, cantidad = 0;
+        //Indica las opciones para llamar al GPS.
+        var opcionesGPS = {
+            enableHighAccuracy: true,
+            timeout: 5000,
+            maximumAge: 0
+        }
+
+        $(document).ready(function(){
+
+            //Obteniendo la referencia directa.
+            navigator.geolocation.getCurrentPosition(function(geodata){
+                var coordenadas = geodata.coords;
+                document.querySelector("#latitud").value = coordenadas.latitude;
+                document.querySelector("#longitud").value = coordenadas.longitude;
+            }, function(){
+                document.querySelector("#latitud").value = "No permite el acceso del API GEO";
+                document.querySelector("#longitud").value = "No permite el acceso del API GEO";
+            }, opcionesGPS);
+
+            //Obteniendo el cambio de referencia.
+            id = navigator.geolocation.watchPosition(function(geodata){
+                var coordenadas = geodata.coords;
+                document.querySelector("#latitud").value = coordenadas.latitude;
+                document.querySelector("#longitud").value = coordenadas.longitude;
+                cantidad++;
+                if(cantidad>=5){
+                    navigator.geolocation.clearWatch(id);
+                    console.log("Finalizando la trama")
+                }
+            },function(error){
+                //recibe un objeto con dos propiedades: code y message.
+                document.querySelector("#latitud").value = "No permite el acceso del API GEO. Codigo: "+error.code+", mensaje: "+error.message;
+                document.querySelector("#longitud").value = "No permite el acceso del API GEO. Codigo: "+error.code+", mensaje: "+error.message;
+            });
+        });
+    </script>
 </#macro>
 
 <@display_page/>
