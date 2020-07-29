@@ -45,9 +45,9 @@ public class Main {
         });
 
         app.post("formulario", ctx -> {
-            String nomb = ctx.formParam("nombre").toString();
-            String sector = ctx.formParam("sector").toString();
-            String nivelEscolar = ctx.formParam("nivelEscolar").toString();
+            String nomb = ctx.formParam("nombre");
+            String sector = ctx.formParam("sector");
+            String nivelEscolar = ctx.formParam("nivelEscolar");
             System.out.println(nomb + " " + sector + " " + nivelEscolar);
             ctx.redirect("/formulario");
         });
@@ -68,6 +68,9 @@ public class Main {
             ctx.render("/public/templates/mapa.ftl", contexto);
         });
 
+        app.get("/html5", ctx -> {
+            ctx.render("/public/templates/html5.ftl");
+        });
 
         // DataBaseServices.getInstancia().stopDB();
     }
