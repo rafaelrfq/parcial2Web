@@ -67,6 +67,13 @@ public class Main {
             contexto.put("formularios", forms);
             ctx.render("/public/templates/mapa.ftl", contexto);
         });
+        app.get("/login", ctx -> {
+            /*List<Formulario> forms = FormularioServicios.getInstance().ListadoCompleto();
+            Map<String, Object> contexto = new HashMap<>();
+            contexto.put("title", "Listado Formularios Registrado Por el Usuario");
+            contexto.put("formularios", forms);*/
+            ctx.render("/public/templates/login/login.ftl");
+        });
 
         // DataBaseServices.getInstancia().stopDB();
     }
