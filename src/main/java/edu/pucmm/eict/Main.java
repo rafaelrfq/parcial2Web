@@ -79,7 +79,7 @@ public class Main {
             Map<String, Object> contexto = new HashMap<>();
             contexto.put("title", "Listado Formularios Registrado Por el Usuario");
             contexto.put("formularios", forms);*/
-            ctx.render("/public/templates/login/register.ftl.ftl");
+            ctx.render("/public/templates/login/register.ftl");
         });
 
         // DataBaseServices.getInstancia().stopDB();
