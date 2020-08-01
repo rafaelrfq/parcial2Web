@@ -1,18 +1,25 @@
 package edu.pucmm.eict;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.pucmm.eict.controladora.DataBaseServices;
 import edu.pucmm.eict.controladora.FormularioServicios;
 import edu.pucmm.eict.controladora.UsuarioServicios;
 import edu.pucmm.eict.logico.Formulario;
+import edu.pucmm.eict.logico.FormularioJSON;
 import edu.pucmm.eict.logico.Usuario;
 import io.javalin.Javalin;
 import io.javalin.core.util.RouteOverviewPlugin;
+import org.eclipse.jetty.websocket.api.Session;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.*;
 
 public class Main {
+    public static List<Session> usuariosConectados = new ArrayList<>();
+    public static List<FormularioJSON> formulariosRecibidos = new ArrayList<>();
     public static void main(String[] args) throws SQLException {
+
         // Se inicia la base de datos
         DataBaseServices.getInstancia().startDB();
 
@@ -29,6 +36,15 @@ public class Main {
             javalinConfig.addStaticFiles("/public"); //Agregamos carpeta public como source de archivos estaticos
             javalinConfig.registerPlugin(new RouteOverviewPlugin("rutas")); //Aplicamos el plugin de rutas
         }).start(7000);
+
+        app.before(ctx -> {
+           for(FormularioJSON formu : formulariosRecibidos){
+               if(formu.getNombre() != null && formu.getSector() != null && formu.getNivelEscolar() != null){
+                   Formulario formuTmp = new Formulario(formu.getNombre(), formu.getSector(), formu.getNivelEscolar(), formu.getLatitud(), formu.getLongitud());
+                   FormularioServicios.getInstance().crear(formuTmp);
+               }
+           }
+        });
 
         app.get("/", ctx -> {
             Map<String, Object> contexto = new HashMap<>();
@@ -82,6 +98,61 @@ public class Main {
             ctx.render("/public/templates/login/register.ftl");
         });
 
+        app.ws("/mensajeServidor", ws -> {
+
+            ws.onConnect(ctx -> {
+                System.out.println("Conexión Iniciada - "+ctx.getSessionId());
+                usuariosConectados.add(ctx.session);
+            });
+
+            ws.onMessage(ctx -> {
+                //Puedo leer los header, parametros entre otros.
+                ctx.headerMap();
+                ctx.pathParamMap();
+                ctx.queryParamMap();
+                boolean condicion = true;
+                FormularioJSON tempFormu = jacksonToObject(ctx.message());
+                for(FormularioJSON formu : formulariosRecibidos){
+                    if(tempFormu.getId() == formu.getId()){
+                        condicion = false;
+                    }
+                }
+                if(condicion){
+                    formulariosRecibidos.add(tempFormu);
+                }
+
+                //
+                System.out.println("Mensaje Recibido de "+ctx.getSessionId()+" ====== ");
+                System.out.println("Mensaje: "+ ctx.message());
+                System.out.println("================================");
+                //
+            });
+
+            ws.onBinaryMessage(ctx -> {
+                System.out.println("Mensaje Recibido Binario "+ctx.getSessionId()+" ====== ");
+                System.out.println("Mensaje: "+ctx.data().length);
+                System.out.println("================================");
+            });
+
+            ws.onClose(ctx -> {
+                System.out.println("Conexión Cerrada - "+ctx.getSessionId());
+                usuariosConectados.remove(ctx.session);
+            });
+
+            ws.onError(ctx -> {
+                System.out.println("Ocurrió un error en el WS");
+            });
+        });
+
         // DataBaseServices.getInstancia().stopDB();
+    }
+
+    public static FormularioJSON jacksonToObject(String jsonString)
+            throws IOException{
+        ObjectMapper mapper = new ObjectMapper();
+
+//        String jsonStr = mapper.writeValueAsString(foo);
+//        assertEquals(foo.getId(),result.getId());
+        return mapper.readValue(jsonString, FormularioJSON.class);
     }
 }
