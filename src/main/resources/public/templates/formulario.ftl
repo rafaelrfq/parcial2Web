@@ -24,6 +24,9 @@
             //creando los indices. (Dado por el nombre, campo y opciones)
             formularios.createIndex('por_id', 'id', {unique: true});
 
+            var usuario = active.createObjectStore("usuario", { keyPath : 'user', autoIncrement : false });
+            //creando los indices. (Dado por el nombre, campo y opciones)
+            usuario.createIndex('por_user', 'user', {unique : true});
         };
 
         //El evento que se dispara una vez, lo
@@ -44,11 +47,11 @@
             var transaccion = dbActiva.transaction(["formularios"], "readwrite");
 
             //Manejando los errores.
-            transaccion.onerror = function (e) {
+            transaccion.onerror = () => {
                 alert(request.error.name + '\n\n' + request.error.message);
             };
 
-            transaccion.oncomplete = function (e) {
+            transaccion.oncomplete = () => {
                 document.querySelector("#nombre").value = '';
                 alert('Objeto agregado correctamente');
             };
@@ -74,7 +77,7 @@
                 alert(mensaje)
             };
 
-            request.onsuccess = function (e) {
+            request.onsuccess = () => {
                 console.log("Datos Procesado con exito");
                 document.querySelector("#nombre").value = "";
                 document.querySelector("#sector").value = "";
@@ -86,27 +89,27 @@
 
         function editarFormulario() {
 
-            var identificacion = prompt("Indique el id");
+            let identificacion = prompt("Indique el id");
             console.log("ID digitado: " + identificacion);
 
-            var nombre = prompt("Indique el nombre");
+            let nombre = prompt("Indique el nombre");
             console.log("Nombre digitado: "+ nombre);
 
-            var sector = prompt("Indique el sector");
+            let sector = prompt("Indique el sector");
             console.log("Sector digitado: "+ sector);
 
-            var nivel = prompt("Indique el nivel escolar");
+            let nivel = prompt("Indique el nivel escolar");
             console.log("Nivel Escolar digitado: "+ nivel);
 
             //abriendo la transacción en modo escritura.
-            var data = dataBase.result.transaction(["formularios"],"readwrite");
-            var formularios = data.objectStore("formularios");
-            var requestEdicion = formularios.get(identificacion);
+            const transaccion = dataBase.result.transaction(["formularios"],"readwrite");
+            const formularios = transaccion.objectStore("formularios");
+            const requestEdicion = formularios.get(identificacion);
 
             //buscando formulario por la referencia al key.
             requestEdicion.onsuccess = () => {
 
-                var resultado = requestEdicion.result;
+                let resultado = requestEdicion.result;
                 console.log("los datos: "+JSON.stringify(resultado));
 
                 if(resultado !== undefined){
@@ -115,17 +118,14 @@
                     resultado.sector = sector;
                     resultado.nivelEscolar = nivel;
 
-                    var solicitudUpdate = formularios.put(resultado);
-
+                    let solicitudUpdate = formularios.put(resultado);
                     //eventos.
                     solicitudUpdate.onsuccess = () => {
                         console.log("Datos Actualizados....");
                     }
-
                     solicitudUpdate.onerror = () => {
                         console.error("Error Datos Actualizados....");
                     }
-
                 }else{
                     console.log("Formulario no encontrado...");
                 }
