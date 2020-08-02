@@ -10,6 +10,7 @@ import edu.pucmm.eict.logico.Usuario;
 import io.javalin.*;
 import io.javalin.core.util.RouteOverviewPlugin;
 import org.eclipse.jetty.websocket.api.Session;
+import org.hibernate.boot.archive.internal.UrlInputStreamAccess;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -99,10 +100,11 @@ public class Main {
             ctx.redirect("/login");
         });
         app.get("/home", ctx -> {
-
+            Usuario aux = ctx.sessionAttribute("usuario");
+            System.out.println("Llego: "+aux.getNombre());
             Map<String, Object> contexto = new HashMap<>();
             contexto.put("title", "Homepage");
-            contexto.put("usuario", ctx.sessionAttribute("usuario"));
+            contexto.put("usuario", aux);
             ctx.render("/public/templates/home.ftl", contexto);
         });
 
@@ -114,9 +116,11 @@ public class Main {
             ctx.render("/public/templates/login/login.ftl");
         });
         app.post("/login", ctx -> {
-            if (UsuarioServicios.getInstance().verify_user(ctx.formParam("user"), ctx.formParam("password")))
-                ctx.sessionAttribute("usuario",UsuarioServicios.getInstance().find(ctx.formParam("user")));
-            ctx.redirect("/home");
+            if (UsuarioServicios.getInstance().verify_user(ctx.formParam("user"), ctx.formParam("password"))){
+                ctx.sessionAttribute("usuario",UsuarioServicios.getInstance().getUsuario(ctx.formParam("user")));
+                ctx.redirect("/home");
+            }
+
         });
         app.get("/register", ctx -> {
             /*List<Formulario> forms = FormularioServicios.getInstance().ListadoCompleto();

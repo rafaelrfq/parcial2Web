@@ -24,6 +24,9 @@
             //creando los indices. (Dado por el nombre, campo y opciones)
             formularios.createIndex('por_id', 'id', {unique: true});
 
+            var usuario = active.createObjectStore("usuario", { keyPath : 'user', autoIncrement : false });
+            //creando los indices. (Dado por el nombre, campo y opciones)
+            usuario.createIndex('por_user', 'user', {unique : true});
         };
 
         //El evento que se dispara una vez, lo
@@ -44,11 +47,11 @@
             var transaccion = dbActiva.transaction(["formularios"], "readwrite");
 
             //Manejando los errores.
-            transaccion.onerror = function (e) {
+            transaccion.onerror = () => {
                 alert(request.error.name + '\n\n' + request.error.message);
             };
 
-            transaccion.oncomplete = function (e) {
+            transaccion.oncomplete = () => {
                 document.querySelector("#nombre").value = '';
                 alert('Objeto agregado correctamente');
             };
@@ -74,7 +77,7 @@
                 alert(mensaje)
             };
 
-            request.onsuccess = function (e) {
+            request.onsuccess = () => {
                 console.log("Datos Procesado con exito");
                 document.querySelector("#nombre").value = "";
                 document.querySelector("#sector").value = "";
@@ -99,8 +102,8 @@
             console.log("Nivel Escolar digitado: "+ nivel);
 
             //abriendo la transacción en modo escritura.
-            const data = dataBase.result.transaction(["formularios"],"readwrite");
-            const formularios = data.objectStore("formularios");
+            const transaccion = dataBase.result.transaction(["formularios"],"readwrite");
+            const formularios = transaccion.objectStore("formularios");
             const requestEdicion = formularios.get(identificacion);
 
             //buscando formulario por la referencia al key.
@@ -116,16 +119,13 @@
                     resultado.nivelEscolar = nivel;
 
                     let solicitudUpdate = formularios.put(resultado);
-
                     //eventos.
                     solicitudUpdate.onsuccess = () => {
                         console.log("Datos Actualizados....");
                     }
-
                     solicitudUpdate.onerror = () => {
                         console.error("Error Datos Actualizados....");
                     }
-
                 }else{
                     console.log("Formulario no encontrado...");
                 }
@@ -208,6 +208,9 @@
                 console.log("Formulario eliminado...");
             };
         }
+
+
+
 
         // Parte de WebSocket
 

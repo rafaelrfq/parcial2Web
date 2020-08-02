@@ -209,6 +209,9 @@
             };
         }
 
+
+
+
         // Parte de WebSocket
 
         var webSocket;

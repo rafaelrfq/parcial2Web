@@ -15,6 +15,9 @@ public class UsuarioServicios extends GestionadDB<Usuario>  {
         }
         return instance;
     }
+    public Usuario getUsuario(String username){
+        return find(username);
+    }
     public boolean verify_user(String username, String password){
 
         try {
