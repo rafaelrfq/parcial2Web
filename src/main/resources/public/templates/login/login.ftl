@@ -172,7 +172,7 @@
 <body class="text-center body">
 
 <form class="form-signin" action="/login" method="post" id="login">
-    <img class="mb-4" src="img/shopping-bag-2-512.gif" alt="" width="72" height="72">
+    <img class="mb-4" src="/img/logo.png" alt="" width="72" height="72">
     <h1 class="h3 mb-3 font-weight-normal">Iniciar Sesi&#243n</h1>
     <label for="user" class="sr-only">Usuario</label>
     <input type="text" id="user" name="user" class="form-control" placeholder="Usuario" required autofocus>
