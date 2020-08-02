@@ -80,6 +80,16 @@ public class Main {
                     });
 
                 });
+
+                path("/listado/eliminar/:id", () -> {
+                    get(ctx -> {
+                        Formulario temporal = FormularioServicios.getInstance().find(ctx.pathParam("id", Integer.class).get());
+                        FormularioServicios.getInstance().eliminar(temporal.getId());
+                        ctx.redirect("/formulario/listado/");
+                    });
+
+                });
+
                 path("/mapa", () -> {
                     get(ctx -> {
                         List<Formulario> forms = FormularioServicios.getInstance().ListadoCompleto();

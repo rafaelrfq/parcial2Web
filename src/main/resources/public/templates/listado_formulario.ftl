@@ -17,8 +17,7 @@
                     <td>${formu.sector}</td>
                     <td>${formu.nivelEscolar}</td>
                     <td>
-                        <a class="btn btn-secondary" href="#">Editar</a>|
-                        <a class="btn btn-danger" href="#">Eliminar</a>
+                        <a class="btn btn-danger" href="/formulario/listado/eliminar/${formu.id}">Eliminar</a>
                     </td>
                 </tr>
             </#list>

@@ -16,6 +16,8 @@ CACHE:
 /templates/js/offline.min.js
 /templates/js/bootstrap.js
 /templates/js/bootstrap.bundle.js
+/templates/js/jquery-3.5.1.slim.min.js
+/templates/js/popper.min.js
 /templates/login/signin.css
 /templates/home.ftl
 /templates/formulario.ftl
