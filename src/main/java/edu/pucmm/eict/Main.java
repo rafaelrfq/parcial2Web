@@ -7,13 +7,15 @@ import edu.pucmm.eict.controladora.UsuarioServicios;
 import edu.pucmm.eict.logico.Formulario;
 import edu.pucmm.eict.logico.FormularioJSON;
 import edu.pucmm.eict.logico.Usuario;
-import io.javalin.Javalin;
+import io.javalin.*;
 import io.javalin.core.util.RouteOverviewPlugin;
 import org.eclipse.jetty.websocket.api.Session;
 
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.*;
+
+import static io.javalin.apibuilder.ApiBuilder.*;
 
 public class Main {
     public static List<Session> usuariosConectados = new ArrayList<>();
@@ -46,43 +48,64 @@ public class Main {
            }
         });
 
+
+
+        app.routes(() -> {
+            path("/formulario", () ->{
+                path("/", () -> {
+                    get(ctx -> {
+                        List<String> choices = Arrays.asList("", "Basico", "Medio", "Grado Universitario", "Postgrado", "Doctorado");
+                        Map<String, Object> contexto = new HashMap<>();
+                        contexto.put("title", "Formulario");
+                        contexto.put("choices", choices);
+                        ctx.render("/public/templates/formulario.ftl", contexto);
+                    });
+                    post(ctx -> {
+                        String nomb = ctx.formParam("nombre");
+                        String sector = ctx.formParam("sector");
+                        String nivelEscolar = ctx.formParam("nivelEscolar");
+                        System.out.println(nomb + " " + sector + " " + nivelEscolar);
+                        ctx.redirect("/formulario");
+                    });
+
+                });
+                path("/listado", () -> {
+                    get(ctx -> {
+                        List<Formulario> forms = FormularioServicios.getInstance().ListadoCompleto();
+                        Map<String, Object> contexto = new HashMap<>();
+                        contexto.put("title", "Listado Formularios");
+                        contexto.put("formularios", forms);
+                        ctx.render("/public/templates/listado_formulario.ftl", contexto);
+                    });
+
+                });
+                path("/mapa", () -> {
+                    get(ctx -> {
+                        List<Formulario> forms = FormularioServicios.getInstance().ListadoCompleto();
+                        Map<String, Object> contexto = new HashMap<>();
+                        contexto.put("title", "Listado Formularios Registrado Por el Usuario");
+                        contexto.put("formularios", forms);
+                        ctx.render("/public/templates/mapa.ftl", contexto);
+                    });
+
+                });
+
+            });
+        });
+
         app.get("/", ctx -> {
             Map<String, Object> contexto = new HashMap<>();
             contexto.put("title", "Homepage");
+            ctx.redirect("/login");
+        });
+        app.get("/home", ctx -> {
+
+            Map<String, Object> contexto = new HashMap<>();
+            contexto.put("title", "Homepage");
+            contexto.put("usuario", ctx.sessionAttribute("usuario"));
             ctx.render("/public/templates/home.ftl", contexto);
         });
 
-        app.get("/formulario", ctx -> {
-            List<String> choices = Arrays.asList("", "Basico", "Medio", "Grado Universitario", "Postgrado", "Doctorado");
-            Map<String, Object> contexto = new HashMap<>();
-            contexto.put("title", "Formulario");
-            contexto.put("choices", choices);
-            ctx.render("/public/templates/formulario.ftl", contexto);
-        });
-
-        app.post("formulario", ctx -> {
-            String nomb = ctx.formParam("nombre");
-            String sector = ctx.formParam("sector");
-            String nivelEscolar = ctx.formParam("nivelEscolar");
-            System.out.println(nomb + " " + sector + " " + nivelEscolar);
-            ctx.redirect("/formulario");
-        });
-
-        app.get("/formulario/listado", ctx -> {
-            List<Formulario> forms = FormularioServicios.getInstance().ListadoCompleto();
-            Map<String, Object> contexto = new HashMap<>();
-            contexto.put("title", "Listado Formularios");
-            contexto.put("formularios", forms);
-            ctx.render("/public/templates/listado_formulario.ftl", contexto);
-        });
-
-        app.get("/formulario/mapa", ctx -> {
-            List<Formulario> forms = FormularioServicios.getInstance().ListadoCompleto();
-            Map<String, Object> contexto = new HashMap<>();
-            contexto.put("title", "Listado Formularios Registrado Por el Usuario");
-            contexto.put("formularios", forms);
-            ctx.render("/public/templates/mapa.ftl", contexto);
-        });
         app.get("/login", ctx -> {
             /*List<Formulario> forms = FormularioServicios.getInstance().ListadoCompleto();
             Map<String, Object> contexto = new HashMap<>();
@@ -90,11 +113,20 @@ public class Main {
             contexto.put("formularios", forms);*/
             ctx.render("/public/templates/login/login.ftl");
         });
+        app.post("/login", ctx -> {
+            if (UsuarioServicios.getInstance().verify_user(ctx.formParam("user"), ctx.formParam("password")))
+                ctx.sessionAttribute("usuario",UsuarioServicios.getInstance().find(ctx.formParam("user")));
+            ctx.redirect("/home");
+        });
         app.get("/register", ctx -> {
             /*List<Formulario> forms = FormularioServicios.getInstance().ListadoCompleto();
             Map<String, Object> contexto = new HashMap<>();
             contexto.put("title", "Listado Formularios Registrado Por el Usuario");
             contexto.put("formularios", forms);*/
+            ctx.render("/public/templates/login/register.ftl");
+        });
+        app.post("/register", ctx -> {
+
             ctx.render("/public/templates/login/register.ftl");
         });
 

@@ -15,4 +15,18 @@ public class UsuarioServicios extends GestionadDB<Usuario>  {
         }
         return instance;
     }
+    public boolean verify_user(String username, String password){
+
+        try {
+            Usuario aux = find(username);
+            if (aux.getUsuario().equals(username) && aux.getPassword().equals(password)){
+                return true;
+            }else {
+                return false;
+            }
+        }catch (Exception e){
+            return false;
+        }
+    }
+
 }

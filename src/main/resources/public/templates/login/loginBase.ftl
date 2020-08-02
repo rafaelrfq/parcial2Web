@@ -125,7 +125,7 @@
 
             var usuario = active.createObjectStore("usuario", { keyPath : 'user', autoIncrement : false });
             //creando los indices. (Dado por el nombre, campo y opciones)
-            usuario.createIndex('por_user', 'user', {unique : false});
+            usuario.createIndex('por_user', 'user', {unique : true});
 
         };
 
