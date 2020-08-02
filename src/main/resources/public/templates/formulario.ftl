@@ -4,9 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <title>Cliente HTML5</title>
+    <script src="/templates/js/offline.min.js"></script>
     <link href="/templates/css/bootstrap.css" rel="stylesheet">
-    <link href="/templates/login/signin.css" rel="stylesheet">
+    <link rel="stylesheet" href="/templates/css/offline-theme-chrome.css" />
+    <link rel="stylesheet" href="/templates/css/offline-language-spanish.css" />
+    <link rel="stylesheet" href="/templates/css/offline-language-spanish-indicator.css" />
+
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <script type="text/javascript" src="/templates/js/bootstrap.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
     <script
@@ -235,19 +240,26 @@
             conectar();
 
             $("#boton").click(function(){
-                let data = dataBase.result.transaction(["formularios"]);
-                let formularios = data.objectStore("formularios");
 
-                formularios.openCursor().onsuccess=function(e) {
-                    //recuperando la posicion del cursor
-                    var cursor = e.target.result;
-                    if(cursor){
-                        webSocket.send(JSON.stringify(cursor.value));
-                        cursor.continue();
-                    }else {
-                        console.log("No hay mas datos.");
-                    }
-                };
+                if(!webSocket || webSocket.readyState == 3) {
+
+                    alert("Debe conectarse a internet, ante de sincronizar")
+
+                }else{
+                    let data = dataBase.result.transaction(["formularios"]);
+                    let formularios = data.objectStore("formularios");
+
+                    formularios.openCursor().onsuccess = function (e) {
+                        //recuperando la posicion del cursor
+                        var cursor = e.target.result;
+                        if (cursor) {
+                            webSocket.send(JSON.stringify(cursor.value));
+                            cursor.continue();
+                        } else {
+                            console.log("No hay mas datos.");
+                        }
+                    };
+                }
             });
         });
 
@@ -262,11 +274,28 @@
 
         function conectar() {
             webSocket = new WebSocket("ws://" + location.hostname + ":" + location.port + "/mensajeServidor");
+            var req = new XMLHttpRequest();
+            req.timeout = 5000;
+            req.open('GET', "http://" + location.hostname + ":" + location.port + "/formulario", true);
+            req.send();
+
+
+
             //indicando los eventos:
             webSocket.onmessage = function(data){recibirInformacionServidor(data);};
-            webSocket.onopen  = function(e){ console.log("Conectado - status "+this.readyState); };
+            webSocket.onopen  = function(e){
+                var req = new XMLHttpRequest();
+                req.timeout = 5000;
+                req.open('GET', "http://" + location.hostname + ":" + location.port + "/formulario", true);
+                req.send();
+                console.log("Conectado - status "+this.readyState); };
             webSocket.onclose = function(e){
+
                 console.log("Desconectado - status "+this.readyState);
+                var req = new XMLHttpRequest();
+                req.timeout = 5000;
+                req.open('GET', "http://" + location.hostname + ":" + location.port + "/formulario", true);
+                req.send();
             };
         }
 

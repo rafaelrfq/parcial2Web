@@ -8,6 +8,12 @@ CACHE:
 /templates/css/bootstrap.css
 /templates/css/bootstrap-grid.css
 /templates/css/bootstrap-reboot.css
+/templates/css/offline-language-spanish.css
+/templates/css/offline-language-spanish-indicator.css
+/templates/css/offline-theme-chrome.css
+
+/templates/js/offline.js
+/templates/js/offline.min.js
 /templates/js/bootstrap.js
 /templates/js/bootstrap.bundle.js
 /templates/login/signin.css
