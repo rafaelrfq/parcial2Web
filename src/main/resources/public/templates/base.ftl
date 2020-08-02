@@ -9,7 +9,7 @@
 
 <#macro display_page>
     <!DOCTYPE html>
-    <html lang="en">
+    <html lang="en" >
     <head>
         <meta charset="UTF-8">
         <title>Cliente HTML5</title>

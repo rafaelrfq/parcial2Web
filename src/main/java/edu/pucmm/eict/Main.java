@@ -113,7 +113,20 @@ public class Main {
             Map<String, Object> contexto = new HashMap<>();
             contexto.put("title", "Listado Formularios Registrado Por el Usuario");
             contexto.put("formularios", forms);*/
-            ctx.render("/public/templates/login/login.ftl");
+            try {
+                System.out.println("entro" );
+                System.out.println("va" + ctx.queryParam("user"));
+                if (UsuarioServicios.getInstance().verify_user(ctx.queryParam("user"), ctx.queryParam("password"))){
+                    ctx.sessionAttribute("usuario",UsuarioServicios.getInstance().getUsuario(ctx.queryParam("user")));
+                    ctx.redirect("/home");
+                }else{
+                    ctx.render("/public/templates/login/login.ftl");
+                }
+            }catch (Exception e){
+                ctx.render("/public/templates/login/login.ftl");
+            }
+
+
         });
         app.post("/login", ctx -> {
             if (UsuarioServicios.getInstance().verify_user(ctx.formParam("user"), ctx.formParam("password"))){
