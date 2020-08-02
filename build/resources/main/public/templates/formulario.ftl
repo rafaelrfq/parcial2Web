@@ -86,27 +86,27 @@
 
         function editarFormulario() {
 
-            var identificacion = prompt("Indique el id");
+            let identificacion = prompt("Indique el id");
             console.log("ID digitado: " + identificacion);
 
-            var nombre = prompt("Indique el nombre");
+            let nombre = prompt("Indique el nombre");
             console.log("Nombre digitado: "+ nombre);
 
-            var sector = prompt("Indique el sector");
+            let sector = prompt("Indique el sector");
             console.log("Sector digitado: "+ sector);
 
-            var nivel = prompt("Indique el nivel escolar");
+            let nivel = prompt("Indique el nivel escolar");
             console.log("Nivel Escolar digitado: "+ nivel);
 
             //abriendo la transacción en modo escritura.
-            var data = dataBase.result.transaction(["formularios"],"readwrite");
-            var formularios = data.objectStore("formularios");
-            var requestEdicion = formularios.get(identificacion);
+            const data = dataBase.result.transaction(["formularios"],"readwrite");
+            const formularios = data.objectStore("formularios");
+            const requestEdicion = formularios.get(identificacion);
 
             //buscando formulario por la referencia al key.
             requestEdicion.onsuccess = () => {
 
-                var resultado = requestEdicion.result;
+                let resultado = requestEdicion.result;
                 console.log("los datos: "+JSON.stringify(resultado));
 
                 if(resultado !== undefined){
@@ -115,7 +115,7 @@
                     resultado.sector = sector;
                     resultado.nivelEscolar = nivel;
 
-                    var solicitudUpdate = formularios.put(resultado);
+                    let solicitudUpdate = formularios.put(resultado);
 
                     //eventos.
                     solicitudUpdate.onsuccess = () => {
