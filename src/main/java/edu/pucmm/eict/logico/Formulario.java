@@ -6,11 +6,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.io.Serializable;
 
-@Entity
+@Entity(name = "Formulario")
 public class Formulario implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // Se genera el ID automatico
     private int id;
+
     private String nombre;
     private String sector;
     private String nivelEscolar;
@@ -26,6 +27,10 @@ public class Formulario implements Serializable {
         this.latitud = latitud;
         this.longitud = longitud;
     }
+
+    public int getId() { return id; }
+
+    public void setId(int id) { this.id = id; }
 
     public String getNombre() { return nombre; }
 

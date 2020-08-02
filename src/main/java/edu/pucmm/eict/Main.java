@@ -44,12 +44,12 @@ public class Main {
            for(FormularioJSON formu : formulariosRecibidos){
                if(formu.getNombre() != null && formu.getSector() != null && formu.getNivelEscolar() != null){
                    Formulario formuTmp = new Formulario(formu.getNombre(), formu.getSector(), formu.getNivelEscolar(), formu.getLatitud(), formu.getLongitud());
-                   FormularioServicios.getInstance().crear(formuTmp);
+                   if(FormularioServicios.getInstance().findByNombre(formuTmp.getNombre()).isEmpty()) {
+                       FormularioServicios.getInstance().crear(formuTmp);
+                   }
                }
            }
         });
-
-
 
         app.routes(() -> {
             path("/formulario", () ->{
