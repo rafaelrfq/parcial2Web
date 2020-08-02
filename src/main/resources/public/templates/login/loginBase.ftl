@@ -104,6 +104,111 @@
             border-top-right-radius: 0;
         }
     </style>
+    <script>
+        //dependiendo el navegador busco la referencia del objeto.
+        var indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB
+
+        //indicamos el nombre y la versión
+        var dataBase = indexedDB.open("parcial2", 1);
+
+
+        //se ejecuta la primera vez que se crea la estructura
+        //o se cambia la versión de la base de datos.
+        dataBase.onupgradeneeded = function (e) {
+            console.log("Creando la estructura de la tabla");
+
+            //obteniendo la conexión activa
+            active = dataBase.result;
+
+            //creando la colección:
+            //En este caso, la colección, tendrá un ID autogenerado.
+
+            var usuario = active.createObjectStore("usuario", { keyPath : 'user', autoIncrement : false });
+            //creando los indices. (Dado por el nombre, campo y opciones)
+            usuario.createIndex('por_user', 'user', {unique : false});
+
+        };
+
+        //El evento que se dispara una vez, lo
+        dataBase.onsuccess = function (e) {
+            console.log('Proceso ejecutado de forma correctamente');
+        };
+
+        dataBase.onerror = function (e) {
+            console.error('Error en el proceso: '+e.target.errorCode);
+        };
+        function agregarUsuario() {
+            var dbActiva = dataBase.result; //Nos retorna una referencia al IDBDatabase.
+
+            //Para realizar una operación de agreagr, actualización o borrar.
+            // Es necesario abrir una transacción e indicar un modo: readonly, readwrite y versionchange
+            var transaccion = dbActiva.transaction(["usuario"], "readwrite");
+
+            //Manejando los errores.
+            transaccion.onerror = function (e) {
+                alert(request.error.name + '\n\n' + request.error.message);
+            };
+
+            transaccion.oncomplete = function (e) {
+                document.querySelector("#user").value = '';
+                alert('Objeto agregado correctamente');
+            };
+
+            //abriendo la colección de datos que estaremos usando.
+            var usuario = transaccion.objectStore("usuario");
+
+            //Para agregar se puede usar add o put, el add requiere que no exista
+            // el objeto.
+            var request = usuario.put({
+                user: document.querySelector("#user").value,
+                name: document.querySelector("#name").value,
+                password: document.querySelector("#password").value,
+
+            });
+
+            request.onerror = function (e) {
+                var mensaje = "Error: "+e.target.errorCode;
+                console.error(mensaje);
+                alert(mensaje)
+            };
+
+            request.onsuccess = function (e) {
+                console.log("Datos Procesado con exito");
+            };
+
+
+        }
+        function buscarUsuario() {
+            //recuperando la matricula.
+            var user = document.querySelector("#user").value;
+            console.log("user digitada: "+user);
+
+            //abriendo la transacción en modo readonly.
+            var data = dataBase.result.transaction(["usuario"]);
+            var usuario = data.objectStore("usuario");
+
+            //buscando estudiante por la referencia al key.
+            usuario.get(""+user).onsuccess = function(e) {
+
+                var resultado = e.target.result;
+                console.log("los datos: "+resultado);
+
+                if(resultado !== undefined){
+                    var myHeaders = new Headers();
+
+                    console.log(JSON.stringify(resultado));
+                    myHeaders.append('usuario', ""+resultado.user);
+
+                }else{
+                    console.log("Usuario no encontrado...");
+                    var form = document.getElementById("login")
+                    form.submit();
+                }
+            };
+
+        }
+
+    </script>
     <@page_head/>
 </head>
 <body class="text-center body">
