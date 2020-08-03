@@ -11,8 +11,8 @@
     <link rel="stylesheet" href="/templates/css/offline-language-spanish-indicator.css" />
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-    <script type="text/javascript" src="/templates/js/bootstrap.js"></script>
     <script type="text/javascript" src="/templates/js/jquery-3.5.1.slim.min.js"></script>
+    <script type="text/javascript" src="/templates/js/bootstrap.js"></script>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
     <script
             src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDmO0JHOHAXY2C3Ud49KbMSwFf3APep1Ow&callback=initMap&libraries=&v=weekly"
@@ -24,7 +24,6 @@
 
         //indicamos el nombre y la versión
         var dataBase = indexedDB.open("parcial2", 1);
-
 
         //se ejecuta la primera vez que se crea la estructura
         //o se cambia la versión de la base de datos.
@@ -101,27 +100,19 @@
                 document.querySelector("#nivelEscolar").value = "";
                 document.querySelector("#latitud").value = "";
                 document.querySelector("#longitud").value = "";
+                setearLocalizacion();
+                listarDatos();
             };
         }
 
-        function editarFormulario() {
+        function editarFormulario(idFormulario) {
 
-            let identificacion = prompt("Indique el id");
-            console.log("ID digitado: " + identificacion);
-
-            let nombre = prompt("Indique el nombre");
-            console.log("Nombre digitado: "+ nombre);
-
-            let sector = prompt("Indique el sector");
-            console.log("Sector digitado: "+ sector);
-
-            let nivel = prompt("Indique el nivel escolar");
-            console.log("Nivel Escolar digitado: "+ nivel);
+            console.log("ID recibido: " + idFormulario);
 
             //abriendo la transacción en modo escritura.
             const transaccion = dataBase.result.transaction(["formularios"],"readwrite");
             const formularios = transaccion.objectStore("formularios");
-            const requestEdicion = formularios.get(identificacion);
+            const requestEdicion = formularios.get(idFormulario);
 
             //buscando formulario por la referencia al key.
             requestEdicion.onsuccess = () => {
@@ -131,18 +122,12 @@
 
                 if(resultado !== undefined){
 
-                    resultado.nombre = nombre;
-                    resultado.sector = sector;
-                    resultado.nivelEscolar = nivel;
-
-                    let solicitudUpdate = formularios.put(resultado);
-                    //eventos.
-                    solicitudUpdate.onsuccess = () => {
-                        console.log("Datos Actualizados....");
-                    }
-                    solicitudUpdate.onerror = () => {
-                        console.error("Error Datos Actualizados....");
-                    }
+                    document.querySelector("#nombre").value = resultado.nombre;
+                    document.querySelector("#sector").value = resultado.sector;
+                    document.querySelector("#nivelEscolar").value = resultado.nivelEscolar;
+                    document.querySelector("#latitud").value = resultado.latitud;
+                    document.querySelector("#longitud").value = resultado.longitud;
+                    borrarFormulario(idFormulario);
                 }else{
                     console.log("Formulario no encontrado...");
                 }
@@ -181,7 +166,6 @@
             data.oncomplete = function () {
                 imprimirTabla(formularios_recuperados);
             }
-            console.log(nuevo);
         }
 
         /**
@@ -198,6 +182,7 @@
             filaTabla.insertCell().textContent = "Nivel Escolar";
             filaTabla.insertCell().textContent = "Latitud";
             filaTabla.insertCell().textContent = "Longitud";
+            filaTabla.insertCell().textContent = "Acciones";
 
             for (var key in lista_formularios) {
                 //
@@ -207,22 +192,30 @@
                 filaTabla.insertCell().textContent = ""+lista_formularios[key].nivelEscolar;
                 filaTabla.insertCell().textContent = ""+lista_formularios[key].latitud;
                 filaTabla.insertCell().textContent = ""+lista_formularios[key].longitud;
+                var btnEliminar = document.createElement('input');
+                btnEliminar.setAttribute('type', 'button');
+                btnEliminar.setAttribute('value', 'Eliminar');
+                btnEliminar.setAttribute('onclick', 'borrarFormulario(' + lista_formularios[key].id + ')');
+                var btnEditar = document.createElement('input');
+                btnEditar.setAttribute('type', 'button');
+                btnEditar.setAttribute('value', 'Editar');
+                btnEditar.setAttribute('onclick', 'editarFormulario(' + lista_formularios[key].id + ')');
+                filaTabla.insertCell().append(btnEditar, btnEliminar);
             }
 
             document.getElementById("listaFormularios").innerHTML="";
             document.getElementById("listaFormularios").appendChild(tabla);
         }
 
-        function borrarFormulario() {
-
-            var id = prompt("Indique el id");
-            console.log("ID digitado: "+id);
+        function borrarFormulario(idFormulario) {
+            console.log("ID enviado: " + idFormulario);
 
             var data = dataBase.result.transaction(["formularios"], "readwrite");
             var formularios = data.objectStore("formularios");
 
-            formularios.delete(id).onsuccess = function (e) {
+            formularios.delete(idFormulario).onsuccess = function (e) {
                 console.log("Formulario eliminado...");
+                listarDatos();
             };
         }
 
@@ -243,7 +236,7 @@
 
                 if(!webSocket || webSocket.readyState == 3) {
 
-                    alert("Debe conectarse a internet, ante de sincronizar")
+                    alert("Debe conectarse a internet, antes de sincronizar")
 
                 }else{
                     let data = dataBase.result.transaction(["formularios"]);
@@ -259,6 +252,7 @@
                             console.log("No hay mas datos.");
                         }
                     };
+                    alert("Datos sincronizados");
                 }
             });
         });
@@ -354,14 +348,12 @@
         </div>
         <button class="btn btn-primary" onclick="agregarFormulario()">Salvar</button>
         <button class="btn btn-secondary" onclick="listarDatos()">Listar Datos</button>
-        <button class="btn btn-info" onclick="editarFormulario()">Editar un Formulario</button>
-        <button class="btn btn-danger" onclick="borrarFormulario()">Eliminar un Formulario</button>
     </div>
     <div class="container">
         <br><button id="boton" type="button">Sincronizar Datos</button>
     </div>
     <br><br>
-    <div id="listaFormularios"></div>
+    <div class="container" id="listaFormularios"></div>
 
     <script type="text/javascript" src="/templates/js/jquery-3.5.1.slim.min.js"></script>
     <script>
@@ -369,12 +361,13 @@
         //Indica las opciones para llamar al GPS.
         var opcionesGPS = {
             enableHighAccuracy: true,
-            timeout: 5000,
+            timeout: 500,
             maximumAge: 0
         }
 
-        $(document).ready(function(){
+        $(document).ready(setearLocalizacion());
 
+        function setearLocalizacion() {
             //Obteniendo la referencia directa.
             navigator.geolocation.getCurrentPosition(function(geodata){
                 var coordenadas = geodata.coords;
@@ -400,7 +393,7 @@
                 document.querySelector("#latitud").value = "No permite el acceso del API GEO. Codigo: "+error.code+", mensaje: "+error.message;
                 document.querySelector("#longitud").value = "No permite el acceso del API GEO. Codigo: "+error.code+", mensaje: "+error.message;
             });
-        });
+        }
     </script>
 </main>
 <script type="text/javascript" src="/templates/js/jquery-3.5.1.slim.min.js"></script>
