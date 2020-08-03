@@ -25,6 +25,9 @@
     <!--<link href="../assets/dist/css/bootstrap.css" rel="stylesheet">-->
 
     <style>
+        .rojo {
+            color: red;
+        }
         .bd-placeholder-img {
             font-size: 1.125rem;
             text-anchor: middle;
@@ -184,6 +187,7 @@
     <label>
         <input class="checkbox mb-3" type="checkbox" value="remember-me" name="statu"> Recordarme
     </label>
+    ${error}
     <p class="mt-5 mb-3 text-muted">&copy; 2019-2020</p>
 </form>
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"

@@ -17,6 +17,7 @@ import java.sql.SQLException;
 import java.util.*;
 
 import static io.javalin.apibuilder.ApiBuilder.*;
+import static j2html.TagCreator.p;
 
 public class Main {
     public static List<Session> usuariosConectados = new ArrayList<>();
@@ -41,18 +42,35 @@ public class Main {
         }).start(7000);
 
         app.before(ctx -> {
-           for(FormularioJSON formu : formulariosRecibidos){
-               if(formu.getNombre() != null && formu.getSector() != null && formu.getNivelEscolar() != null){
-                   Formulario formuTmp = new Formulario(formu.getNombre(), formu.getSector(), formu.getNivelEscolar(), formu.getLatitud(), formu.getLongitud());
-                   if(FormularioServicios.getInstance().findByNombre(formuTmp.getNombre()).isEmpty()) {
-                       FormularioServicios.getInstance().crear(formuTmp);
-                   }
-               }
-           }
+
+                for (FormularioJSON formu : formulariosRecibidos) {
+                    if (formu.getNombre() != null && formu.getSector() != null && formu.getNivelEscolar() != null) {
+                        Formulario formuTmp = new Formulario(formu.getNombre(), formu.getSector(), formu.getNivelEscolar(), formu.getLatitud(), formu.getLongitud());
+                        if (FormularioServicios.getInstance().findByNombre(formuTmp.getNombre()).isEmpty()) {
+                            FormularioServicios.getInstance().crear(formuTmp);
+                        }
+                    }
+                }
+
         });
 
+        app.before("/home",ctx ->{
+            if(ctx.sessionAttribute("usuario") ==null) {
+                ctx.redirect("/login");
+            }
+        });
+
+
+
         app.routes(() -> {
+
             path("/formulario", () ->{
+                before(ctx ->{
+                    if(ctx.sessionAttribute("usuario") ==null) {
+                        ctx.redirect("/login");
+                    }
+                });
+
                 path("/", () -> {
                     get(ctx -> {
                         List<String> choices = Arrays.asList("", "Basico", "Medio", "Grado Universitario", "Postgrado", "Doctorado");
@@ -123,25 +141,22 @@ public class Main {
             Map<String, Object> contexto = new HashMap<>();
             contexto.put("title", "Listado Formularios Registrado Por el Usuario");
             contexto.put("formularios", forms);*/
-            try {
-                System.out.println("entro" );
-                System.out.println("va" + ctx.queryParam("user"));
-                if (UsuarioServicios.getInstance().verify_user(ctx.queryParam("user"), ctx.queryParam("password"))){
-                    ctx.sessionAttribute("usuario",UsuarioServicios.getInstance().getUsuario(ctx.queryParam("user")));
-                    ctx.redirect("/home");
-                }else{
-                    ctx.render("/public/templates/login/login.ftl");
-                }
-            }catch (Exception e){
-                ctx.render("/public/templates/login/login.ftl");
-            }
+            ctx.req.getSession().invalidate();
+            Map<String, Object> contexto = new HashMap<>();
+            contexto.put("error", "");
+            ctx.render("/public/templates/login/login.ftl",contexto);
 
 
         });
         app.post("/login", ctx -> {
             if (UsuarioServicios.getInstance().verify_user(ctx.formParam("user"), ctx.formParam("password"))){
+
                 ctx.sessionAttribute("usuario",UsuarioServicios.getInstance().getUsuario(ctx.formParam("user")));
                 ctx.redirect("/home");
+            }else{
+                Map<String, Object> contexto = new HashMap<>();
+                contexto.put("error", p("Usuario/contraseña inccorecto").withClass("rojo").render());
+                ctx.render("/public/templates/login/login.ftl",contexto);
             }
 
         });
@@ -150,11 +165,22 @@ public class Main {
             Map<String, Object> contexto = new HashMap<>();
             contexto.put("title", "Listado Formularios Registrado Por el Usuario");
             contexto.put("formularios", forms);*/
-            ctx.render("/public/templates/login/register.ftl");
+            Map<String, Object> contexto = new HashMap<>();
+            contexto.put("error","");
+            ctx.render("/public/templates/login/register.ftl",contexto);
         });
         app.post("/register", ctx -> {
+            if (UsuarioServicios.getInstance().getUsuario(ctx.formParam("user")) == null){
+                Usuario aux = new Usuario(ctx.formParam("user"),ctx.formParam("name"),ctx.formParam("password"));
+                UsuarioServicios.getInstance().crear(aux);
+                ctx.redirect("/login");
+            }else{
+                Map<String, Object> contexto = new HashMap<>();
+                contexto.put("error", p("Usuario existente").withClass("rojo").render());
+                ctx.render("/public/templates/login/register.ftl",contexto);
+            }
 
-            ctx.render("/public/templates/login/register.ftl");
+
         });
 
         app.ws("/mensajeServidor", ws -> {

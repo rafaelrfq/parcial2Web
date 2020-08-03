@@ -9,7 +9,7 @@
 
 <#macro display_page>
     <!doctype html>
-    <html lang="en" manifest="/templates/sinconexion.appcache">
+    <html lang="en">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -39,6 +39,9 @@
                 -moz-user-select: none;
                 -ms-user-select: none;
                 user-select: none;
+            }
+            .rojo {
+                color: red;
             }
 
             @media (min-width: 768px) {

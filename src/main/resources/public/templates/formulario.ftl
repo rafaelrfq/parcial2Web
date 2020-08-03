@@ -177,6 +177,7 @@
             var tabla = document.createElement("table");
             tabla.setAttribute('class', 'table table-bordered')
             var filaTabla = tabla.insertRow();
+            filaTabla.setAttribute("class","thead-dark")
             filaTabla.insertCell().textContent = "Nombre";
             filaTabla.insertCell().textContent = "Sector";
             filaTabla.insertCell().textContent = "Nivel Escolar";
@@ -193,10 +194,12 @@
                 filaTabla.insertCell().textContent = ""+lista_formularios[key].latitud;
                 filaTabla.insertCell().textContent = ""+lista_formularios[key].longitud;
                 var btnEliminar = document.createElement('input');
+                btnEliminar.setAttribute('class', 'btn btn-outline-danger')
                 btnEliminar.setAttribute('type', 'button');
                 btnEliminar.setAttribute('value', 'Eliminar');
                 btnEliminar.setAttribute('onclick', 'borrarFormulario(' + lista_formularios[key].id + ')');
                 var btnEditar = document.createElement('input');
+                btnEditar.setAttribute('class', 'btn btn-outline-primary')
                 btnEditar.setAttribute('type', 'button');
                 btnEditar.setAttribute('value', 'Editar');
                 btnEditar.setAttribute('onclick', 'editarFormulario(' + lista_formularios[key].id + ')');
@@ -311,10 +314,16 @@
     <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ml-auto">
             <li class="nav-item">
-                <a class="nav-link" href="#">Ejemplo</a>
+                <a class="nav-link active" href="/formulario">Formulario</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/formulario">Formulario</a>
+                <a class="nav-link active" href="/formulacio/mapa">Mapa</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" href="/formulacio/listado">Listado Del Formulario</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" href="/login">Salir</a>
             </li>
         </ul>
     </div>
@@ -349,11 +358,11 @@
         <button class="btn btn-primary" onclick="agregarFormulario()">Salvar</button>
         <button class="btn btn-secondary" onclick="listarDatos()">Listar Datos</button>
     </div>
-    <div class="container">
-        <br><button id="boton" type="button">Sincronizar Datos</button>
+    <div class="container ">
+        <br><button id="boton" class="btn btn-outline-success" type="button">Sincronizar Datos</button>
     </div>
     <br><br>
-    <div class="container" id="listaFormularios"></div>
+    <div class="container jumbotron-fluid" id="listaFormularios"></div>
 
     <script type="text/javascript" src="/templates/js/jquery-3.5.1.slim.min.js"></script>
     <script>

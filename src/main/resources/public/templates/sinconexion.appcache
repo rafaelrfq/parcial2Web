@@ -22,11 +22,14 @@ CACHE:
 /templates/home.ftl
 /templates/formulario.ftl
 /img/logo.png
+/img/user.png
 
 
 
 NETWORK:
-/
+/login
+/home
+/formulario/listado
 /formulario/mapa
 
 

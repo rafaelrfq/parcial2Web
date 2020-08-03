@@ -81,11 +81,13 @@
     <br>
     <br>
     <main role="main" class="container">
+        <br><h1 class="text-center">Localizaciones de los Registros</h1><br>
         <div class="jumbotron" style="height: 600px;">
+
             <div id="map"></div>
             <div id="coords"></div>
         </div>
-        <div class="container jumbotron">
+        <div class="container jumbotron-fluid">
             <br><h1 class="text-center">${title}</h1><br>
             <table class="table table-bordered">
                 <thead class="thead-light text-center">

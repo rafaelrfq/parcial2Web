@@ -31,11 +31,18 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
+
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Ejemplo</a>
+                    <a class="nav-link active" href="/formulario">Formulario</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/formulario">Formulario</a>
+                    <a class="nav-link active" href="/formulacio/mapa">Mapa</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/formulacio/listado">Listado Del Formulario</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/login">Salir</a>
                 </li>
             </ul>
         </div>
