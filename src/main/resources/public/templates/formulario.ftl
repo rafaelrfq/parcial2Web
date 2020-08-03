@@ -270,7 +270,7 @@
         }
 
         function conectar() {
-            webSocket = new WebSocket("ws://" + location.hostname + ":" + location.port + "/mensajeServidor");
+            webSocket = new WebSocket("wss://" + location.hostname + ":" + location.port + "/mensajeServidor");
             var req = new XMLHttpRequest();
             req.timeout = 5000;
             req.open('GET', "http://" + location.hostname + ":" + location.port + "/formulario", true);
@@ -317,10 +317,10 @@
                 <a class="nav-link active" href="/formulario">Formulario</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link active" href="/formulacio/mapa">Mapa</a>
+                <a class="nav-link active" href="/formulario/mapa">Mapa</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link active" href="/formulacio/listado">Listado Del Formulario</a>
+                <a class="nav-link active" href="/formulario/listado">Listado Del Formulario</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link active" href="/login">Salir</a>

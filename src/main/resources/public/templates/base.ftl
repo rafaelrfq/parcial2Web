@@ -36,10 +36,10 @@
                     <a class="nav-link active" href="/formulario">Formulario</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" href="/formulacio/mapa">Mapa</a>
+                    <a class="nav-link active" href="/formulario/mapa">Mapa</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" href="/formulacio/listado">Listado Del Formulario</a>
+                    <a class="nav-link active" href="/formulario/listado">Listado Del Formulario</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link active" href="/login">Salir</a>
