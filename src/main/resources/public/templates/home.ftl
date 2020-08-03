@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <title>Cliente HTML5</title>
     <link href="/templates/css/bootstrap.css" rel="stylesheet">
+
+    <script src="/templates/js/offline.min.js"></script>
+    <link rel="stylesheet" href="/templates/css/offline-theme-chrome.css" />
+    <link rel="stylesheet" href="/templates/css/offline-language-spanish.css" />
+    <link rel="stylesheet" href="/templates/css/offline-language-spanish-indicator.css" />
+
     <script type="text/javascript" src="/templates/js/bootstrap.js"></script>
     <script type="text/javascript" src="/templates/js/jquery-3.5.1.slim.min.js"></script>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
@@ -134,6 +140,28 @@
         }
     </style>
     <script>
+        var entro = false;
+        var run = function(){
+            if(entro === false){
+                agregarUsuario();
+                entro = true
+            }
+            if (Offline.state === 'up'){
+                document.getElementById("mapa").disabled = false;
+                document.getElementById("listado").disabled = false;
+            }else{
+                document.getElementById("mapa").disabled = true;
+                document.getElementById("listado").disabled = true;
+                console.log("no hay")
+            }
+            var req = new XMLHttpRequest();
+            req.timeout = 20000;
+            req.open('GET', "https://" + location.hostname + ":" + location.port + "/home", true);
+            req.send();
+
+        }
+
+        setInterval(run, 3000);
         var indexedDB;
         var dataBase;
 
@@ -171,9 +199,7 @@
         };
 
 
-        window.onload = function () {
-            agregarUsuario()
-        };
+
 
 
         function agregarUsuario() {
@@ -261,10 +287,10 @@
                 <a class="nav-link active" href="/formulario">Formulario</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link active" href="/formulario/mapa">Mapa</a>
+                <a class="nav-link active" id="mapa" href="/formulario/mapa">Mapa</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link active" href="/formulario/listado">Listado Del Formulario</a>
+                <a class="nav-link active" id="listado" href="/formulario/listado">Listado Del Formulario</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link active" href="/login">Salir</a>
