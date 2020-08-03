@@ -39,7 +39,7 @@ public class Main {
         Javalin app = Javalin.create(javalinConfig -> {
             javalinConfig.addStaticFiles("/public"); //Agregamos carpeta public como source de archivos estaticos
             javalinConfig.registerPlugin(new RouteOverviewPlugin("rutas")); //Aplicamos el plugin de rutas
-        }).start(7000);
+        }).start(5000);
 
         app.before(ctx -> {
 
