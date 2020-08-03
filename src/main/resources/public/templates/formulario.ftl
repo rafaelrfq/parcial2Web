@@ -256,6 +256,7 @@
                         }
                     };
                     alert("Datos sincronizados");
+                    dataBase.result.deleteObjectStore("formularios");
                 }
             });
         });
@@ -273,7 +274,7 @@
             webSocket = new WebSocket("wss://" + location.hostname + ":" + location.port + "/mensajeServidor");
             var req = new XMLHttpRequest();
             req.timeout = 5000;
-            req.open('GET', "http://" + location.hostname + ":" + location.port + "/formulario", true);
+            req.open('GET', "https://" + location.hostname + ":" + location.port + "/formulario", true);
             req.send();
 
 
@@ -283,7 +284,7 @@
             webSocket.onopen  = function(e){
                 var req = new XMLHttpRequest();
                 req.timeout = 5000;
-                req.open('GET', "http://" + location.hostname + ":" + location.port + "/formulario", true);
+                req.open('GET', "https://" + location.hostname + ":" + location.port + "/formulario", true);
                 req.send();
                 console.log("Conectado - status "+this.readyState); };
             webSocket.onclose = function(e){
@@ -291,7 +292,7 @@
                 console.log("Desconectado - status "+this.readyState);
                 var req = new XMLHttpRequest();
                 req.timeout = 5000;
-                req.open('GET', "http://" + location.hostname + ":" + location.port + "/formulario", true);
+                req.open('GET', "https://" + location.hostname + ":" + location.port + "/formulario", true);
                 req.send();
             };
         }
