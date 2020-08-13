@@ -52,7 +52,7 @@ public class DataBaseServices {
 
     public void startDB() throws SQLException {
         // Se crea el servidor
-        tcp = Server.createTcpServer("-tcpPort", "9052", "-tcpAllowOthers", "-tcpDaemon", "-ifNotExists").start();
+        tcp = Server.createTcpServer("-tcpPort", "9092", "-tcpAllowOthers", "-tcpDaemon", "-ifNotExists").start();
     }
 
     public void stopDB() {
